@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="si">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UBT — Exam Flow</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">UBT Test</div>
+    <div class="center-title">EXAM CENTER</div>
+    <div class="top-right">
+      <div id="candidateId">-</div>
+      <div id="timer">00:50:00</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- LOGIN -->
+    <section class="card" id="loginCard">
+      <div class="card-top"><h1>LOGIN</h1></div>
+      <form id="loginForm" class="card-body" novalidate>
+        <label class="field"><span class="label-text">Examinee Number</span><input id="examinee" type="text" required /></label>
+        <label class="field"><span class="label-text">Full Name</span><input id="fullname" type="text" /></label>
+        <label class="field"><span class="label-text">Date of Birth</span><input id="dob" type="date" required /></label>
+        <div class="controls">
+          <button type="submit" class="btn-login">Login</button>
+        </div>
+        <p id="msg" class="msg" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- BRIGHTNESS -->
+    <section class="card" id="brightnessCard" hidden>
+      <div class="card-top" style="background:#3498db;"><h1>Brightness</h1></div>
+      <div class="card-body">
+        <label class="field">
+          <span class="label-text">Brightness: <span id="brightnessValue">100%</span></span>
+          <input id="brightnessRange" type="range" min="0.5" max="1.5" step="0.01" value="1" />
+        </label>
+        <div class="controls">
+          <button id="backLogin" class="btn-light">Back</button>
+          <button id="toVolume" class="btn-login">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VOLUME -->
+    <section class="card" id="volumeCard" hidden>
+      <div class="card-top" style="background:#2f6de6;"><h1>Volume</h1></div>
+      <div class="card-body">
+        <label class="field"><span class="label-text">Volume</span>
+          <input id="volumeRange" type="range" min="0" max="1" step="0.01" value="1" />
+        </label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="playKorean" class="btn-light">Play Korean TTS</button>
+        </div>
+        <div class="controls">
+          <button id="backBrightness" class="btn-light">Back</button>
+          <button id="toInfo" class="btn-login">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- INFO -->
+    <section class="card" id="infoCard" hidden>
+      <div class="card-top" style="background:#26325a;"><h1>Examinee Info</h1></div>
+      <div class="card-body">
+        <p><strong>Examinee No:</strong> <span id="infoExaminee">-</span></p>
+        <p><strong>Name:</strong> <span id="infoName">-</span></p>
+        <p><strong>DOB:</strong> <span id="infoDob">-</span></p>
+        <div class="controls">
+          <button id="backVolume" class="btn-light">Back</button>
+          <button id="toStart" class="btn-login">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- START -->
+    <section class="card" id="startCard" hidden>
+      <div class="card-top"><h1>Ready to Start</h1></div>
+      <div class="card-body">
+        <p><strong>Examinee:</strong> <span id="startExaminee">-</span></p>
+        <p><strong>Name:</strong> <span id="startName">-</span></p>
+        <div class="controls">
+          <button id="backInfo" class="btn-light">Back</button>
+          <button id="startExamBtn" class="btn-login">Start Exam</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXAM PALETTE -->
+    <section class="card wide" id="examCard" aria-labelledby="examTitle" hidden>
+      <div class="card-top" style="background:#3b6bd8;"><h1 id="examTitle">Exam — Question Palette</h1></div>
+      <div class="exam-body">
+        <div class="panel">
+          <div class="panel-title">Reading (20)</div>
+          <div id="gridReading" class="question-grid" aria-label="Reading questions"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Listening (20+)</div>
+          <div id="gridListening" class="question-grid" aria-label="Listening questions"></div>
+        </div>
+      </div>
+      <div class="exam-footer">
+        <div class="legend">
+          <span class="legend-item"><span class="dot empty"></span> Unanswered</span>
+          <span class="legend-item"><span class="dot answered"></span> Answered</span>
+          <span class="legend-item"><span class="dot current"></span> Current</span>
+        </div>
+        <div class="bottom-actions">
+          <button id="finishExamBtn" class="btn-login">Submit Exam</button>
+          <button id="examBackBtn" class="btn-light">Back</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUESTION VIEW -->
+    <section class="card wide" id="questionViewCard" aria-labelledby="questionViewTitle" hidden>
+      <div class="card-top" style="background:#f5f7fa;color:#222;">
+        <h1 id="questionViewTitle" style="margin:0;font-weight:700;color:#333;padding:6px 0;">Question</h1>
+      </div>
+
+      <div class="question-body">
+        <div class="q-left" aria-live="polite">
+          <div class="q-instruction" id="qInstruction">다음을 보고 맞는 단어나 문장을 고르십시오.</div>
+
+          <!-- image OR audio-icon area -->
+          <div class="q-image-wrap" id="qMediaWrap">
+            <img id="qImage" src="" alt="Question image" style="display:none" />
+            <div id="audioIcon" class="audio-icon" style="display:none" role="group" aria-label="audio control">
+              <div class="headphone-svg" aria-hidden="true">🎧</div>
+              <button id="audioPlayBtn" class="play-btn" aria-pressed="false" aria-label="Play audio">►</button>
+              <div id="audioStatus" class="audio-status">Play</div>
+            </div>
+          </div>
+
+          <div class="q-stem">
+            <div class="q-label" id="qStemLabel"></div>
+            <div class="q-content" id="qStemContent" style="display:none;"></div>
+          </div>
+        </div>
+
+        <div class="q-right">
+          <div class="options" id="qOptions"></div>
+        </div>
+      </div>
+
+      <div class="question-footer">
+        <div class="left-controls"><button id="qPrevBtn" class="btn-light">Previous</button></div>
+        <div class="center-controls"><button id="allQBtn" class="btn-light">All Questions</button></div>
+        <div class="right-controls"><button id="qNextBtn" class="btn-login">Next</button></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Hidden audio element used for listening questions -->
+  <audio id="qAudio" preload="auto"></audio>
+
+  <!-- Lightbox modal for enlarged images -->
+  <div id="imgModal" class="img-modal" aria-hidden="true">
+    <div class="img-modal-content" role="dialog" aria-modal="true">
+      <img id="modalImg" src="" alt="Enlarged question image" />
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
